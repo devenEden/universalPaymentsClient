@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import 'antd/dist/antd.css';
+import SideMenu from './components/SideMenu';
+import Header from './components/Header';
+import { BrowserRouter as Router , Route, Switch  } from 'react-router-dom';
+import { Layout } from 'antd';
+import Routes from './routes';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  state = {
+    collapsed: false,
+  };
+
+  render() {
+    return (
+      <Router>
+        <Switch>
+       <Layout>
+        <SideMenu  />
+        <div className='mainContainer'>
+        <Header  />
+        {
+    Routes.map( (route, idx) => <Route exact key={idx}  path={route.path} component={route.component} />)
+        }
+        </div>
+       </Layout>
+       </Switch>
+      </Router>
+    );
+  }
 }
 
 export default App;
