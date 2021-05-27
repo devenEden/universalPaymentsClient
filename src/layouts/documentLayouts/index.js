@@ -20,7 +20,7 @@ class DocumentsIndex extends Component {
       }
       fetchDocuments = async () => {
          try { 
-              await fetch('http://127.0.0.1:8080/api/documents')
+              await fetch('https://universalpaymentsbackend.herokuapp.com/api/documents')
                 .then(response => { 
                     response.json()
                     .then(response => {
@@ -63,7 +63,7 @@ class DocumentsIndex extends Component {
           console.log(result,'eger')
             try {
 
-                const res =  await fetch('http://127.0.0.1:8080/api/documents/create',{
+                const res =  await fetch('https://universalpaymentsbackend.herokuapp.com/api/documents/create',{
                     method:'POST',
                     headers:{
                         'Content-type':'application/json',
@@ -110,7 +110,7 @@ class DocumentsIndex extends Component {
       }
 
       deleteDocument = async id => {
-             await fetch(`http://127.0.0.1:8080/api/documents/${id}`,{
+             await fetch(`https://universalpaymentsbackend.herokuapp.com/api/documents/${id}`,{
                  method:'DELETE'
              }).then( response => {
                 if (!response.ok ) {

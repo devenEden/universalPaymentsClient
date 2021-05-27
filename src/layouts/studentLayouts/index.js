@@ -19,8 +19,9 @@ class StudentLayout extends Component {
         editData:{},
     }
     //get All Students
+    
      fetchStudents = async () => {
-       await fetch('http://127.0.0.1:8080/api/students/')
+       await fetch(`https://universalpaymentsbackend.herokuapp.com/api/students/`)
       .then( response =>  response.json() )
       .then(studentList => { 
           try {
@@ -48,13 +49,13 @@ class StudentLayout extends Component {
     //Mount Component
     componentDidMount () {
         this.fetchStudents();
-        
+        console.log(process.env.API_URL);
     }
     //add new Student
     addStudent = async student => {
 
         try {
-            const res =  await  fetch('http://127.0.0.1:8080/api/students/create',{
+            const res =  await  fetch('https://universalpaymentsbackend.herokuapp.com/api/students/create',{
                     method:'POST',
                     headers: {
                         'Content-type':'application/json'
@@ -87,7 +88,7 @@ class StudentLayout extends Component {
     //delete Student
     deleteStudents = async id => {
         console.log(id);
-        await fetch(`http://127.0.0.1:8080/api/students/${id}`,{
+        await fetch(`https://universalpaymentsbackend.herokuapp.com/api/students/${id}`,{
             method:'DELETE'
         })
         .then(response => {
