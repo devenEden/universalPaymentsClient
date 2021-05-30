@@ -191,7 +191,7 @@ class DocumentsIndex extends Component {
                         {/* <Button >
                         <Link to='documents/universalPayments' > 
                               Universal Payments
-                        </Link>
+                        </Link> 
                         </Button> */}
                         <Button icon={<FiPlus />}
                                 onClick={this.openAddModal} 
