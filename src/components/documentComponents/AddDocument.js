@@ -51,6 +51,10 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
                          required:true,
                          message:'Please Select a Code!',
 
+                       },
+                       {
+                         max:3,
+                         message:'Code must be 3 numbers or less'
                        }
                      ]} >
                 <Input maxLength={3}  type='number' />
