@@ -74,7 +74,7 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
           rules={[
             {
               required: true,
-              message: 'Please input the Other Names!',
+              message: 'Please input the Description!',
             },
           ]}
         >
