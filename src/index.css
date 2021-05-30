@@ -19,7 +19,7 @@ code {
 .header {
   padding: 5px;
   width: 100%;
-  /* margin-left: 200px; */
+  margin-left: 200px;
   height: 100px;
   background-color: inherit;
   font-size: 20px;
@@ -53,7 +53,7 @@ margin-top: 10px;
   height: auto;
   margin: 1% 2.5%;
   padding: 2%;
- /* margin-left: 210px; */
+ margin-left: 210px;
 }
 
 .flex
