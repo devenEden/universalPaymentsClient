@@ -67,7 +67,7 @@ class DocumentsIndex extends Component {
         const msgLoading = message.loading('Adding Document. Please wait for a confirmation');
             try {
 
-                const res =  await fetch('https://universalpaymentsbackend.herokuapp.com/api/documents/create',{
+                const res =  await fetch(`${this.state.api_url}/api/documents/create`,{
                     method:'POST',
                     headers:{
                         'Content-type':'application/json',
@@ -115,7 +115,7 @@ class DocumentsIndex extends Component {
 
       deleteDocument = async id => {
         const msgLoading = message.loading('Deleting document Please wait for a confirmation ');
-             await fetch(`https://universalpaymentsbackend.herokuapp.com/api/documents/${id}`,{
+             await fetch(`${this.state.api_url}/api/documents/${id}`,{
                  method:'DELETE'
              }).then( response => {
                 if (!response.ok ) {
@@ -188,11 +188,11 @@ class DocumentsIndex extends Component {
             <div className='container box-shadow'>
                 <div className="table-header">
                     <Space>
-                        <Button >
+                        {/* <Button >
                         <Link to='documents/universalPayments' > 
                               Universal Payments
                         </Link>
-                        </Button>
+                        </Button> */}
                         <Button icon={<FiPlus />}
                                 onClick={this.openAddModal} 
                                 type='primary' >

@@ -8,7 +8,6 @@ import Invoicer from '../../components/universalPayments/invoicerComponents';
  const  UniversalPayments = () =>  {
         const { radioValue,universalPaymentsComponent } = useSelector(state => state.documents);
         const component = universalPaymentsComponent;
-        console.log(component);
         return (
             <div className='container box-shadow'>
                {

@@ -5,46 +5,82 @@ import {setUniversalPaymentsComponent }from '../../../actions/documents/document
 import { connect } from 'react-redux';
 
 
-const columns = [
-    {
-      title: 'Code',
-      dataIndex: 'code',
-      key:'code'
-    },
-    {
-      title: 'Documents',
-      dataIndex: 'name',
-      key:'documents'
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key:'description',
-      width:'35%'
-    },
-    {
-        title: 'Unit Amount',
-        dataIndex:'unitAmount',
-        key:'dataIndex',
-        width:'20%',
-    },
-    {
-     title:'Qty',
-     width:'10%',
-     key:'qty',
-     render:  key => <Input min={1} size='small' value={1}  type='number' />
-    }
-  ];
+
 
 export class InvoiceTable extends Component {
+    
+    state = {
+        selectedRowKeys:[],
+        inputValue:[],
+        defaultValue:1,
+        total:0,
+        documentsNumber:0,
+        totalAmount:0
+    }
+    onSelectChange = selectedRowKeys => {
+        this.setState({selectedRowKeys});
+        if (selectedRowKeys.length > 0) {
+            console.log(selectedRowKeys.length,this.state.totalAmount);
+        }
+        else {
+            this.setState({
+                totalAmount:0
+            })
+        }
+    }
+    onChangeInput  = e => {
+        const check = this.state.selectedRowKeys.includes(e.target.id);
+        if (!check) {
+        this.setState({
+            selectedRowKeys:[...this.state.selectedRowKeys,e.target.id]
+        });
+        }
+        
+         
+    }
+    columns = [
+        {
+          title: 'Code',
+          dataIndex: 'code',
+          key:'code'
+        },
+        {
+          title: 'Documents',
+          dataIndex: 'name',
+          key:'documents'
+        },
+        {
+          title: 'Description',
+          dataIndex: 'description',
+          key:'description',
+          width:'35%'
+        },
+        {
+            title: 'Unit Amount',
+            dataIndex:'unitAmount',
+            key:'dataIndex',
+            width:'20%',
+        },
+        {
+         title:'Qty',
+         width:'10%',
+         key:'qty',
+         render:  key => <Input id={key._id} 
+                                size='small'
+                                min={1}
+                                defaultValue={1}
+                                value={this.state.selectedRowKeys.includes(key._id) ? undefined : this.state.defaultValue}
+                                onChange={this.onChangeInput}
+                                type='number' />
+        }
+      ];
 
     onReturn = () => {
         const payload = {
             data:{},
             component:'main'
         }
-        console.log(payload,this.props);
-     console.log('Action',this.props.setUniversalPaymentsComponent(payload));
+        console.log('Action',this.props.setUniversalPaymentsComponent(payload));
        }
        title = () => {
            return (
@@ -62,14 +98,27 @@ export class InvoiceTable extends Component {
                </div>
            )
        }
-
+        
     render() {
+       const {selectedRowKeys} = this.state;
+       const  rowSelection = {
+            selectedRowKeys,
+            onChange: this.onSelectChange
+            
+      };
+      
+        this.props.data.forEach(e => {
+            e.key=e._id
+        });
         return (
             <div className="invoicer-table">
                 <Table bordered={true}
-                       columns={columns}
+                       loading={this.props.loading}
+                       hasData={this.props.hasData}
+                       columns={this.columns}
                        pagination={false}
-                       dataSource={this.props.data}
+                       rowSelection={rowSelection}
+                       dataSource={this.props.documents}
                        size='middle'
                        title={this.title} >
                 </Table>  
@@ -80,7 +129,9 @@ export class InvoiceTable extends Component {
 
 const mapStateToProps = state => {
     return {
-
+      documents: state.documents.documents,
+      loading: state.documents.isLoading,
+      hasData:state.documents.documentsHasData
     }
 }
 

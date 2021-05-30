@@ -27,7 +27,7 @@ const HomeLayout = () => {
                     <div className='text'>Documents</div>
                 </div>
             </Link>  
-            <Link>
+            <Link to='/about'>
                 <div className="flex-card">
                     <div className="icon">
                         <FiInfo />
