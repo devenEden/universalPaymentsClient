@@ -1,17 +1,28 @@
 import React, { Component } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
-import {Form,Input,Button} from 'antd';
+import {Form,Input,Button, message} from 'antd';
 import { setUniversalPaymentsComponent } from '../../actions/documents/documents';
 import { connect } from 'react-redux';
 
 class StudentForm extends Component {
 
     onFinish = result => {
-     const payload = {
-         component:'invoiceComponent',
-         data:result
-     }
-     console.log('Action',this.props.setUniversalPaymentsComponent(payload));
+        const {students} = this.props
+        const check = students.filter( e => {
+            return e.studentNumber === result.studentNumber
+        });
+        console.log(check);
+        if (check.length > 0) {    
+        const payload = {
+            component:'invoiceComponent',
+            data:result
+        }
+        console.log('Action',this.props.setUniversalPaymentsComponent(payload));
+        }
+        else {
+            message.error('Invalid Student Number');
+        }
+    console.log(result);
     }
 
     onFinishFailed = result  => {
@@ -45,7 +56,7 @@ class StudentForm extends Component {
 
 const mapStateToProps = state => {
     return {
-
+     students:state.students.students
     }
 }
 const mapDispatchToProps = () => {
