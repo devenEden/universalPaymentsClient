@@ -47,7 +47,7 @@ class DocumentsIndex extends Component {
                         type:'Server Error'
                     }
                   }
-                  message.error('Server Error: Failed to fetch data from server')
+                  message.error('Failed to load documents from database please check your internet connection')
                   console.log('Action',this.props.setDocumentsError(payload));
                 }
                     );
@@ -106,7 +106,7 @@ class DocumentsIndex extends Component {
                 }
                 this.props.addDocumentError(payload)
                 console.log('Action',this.props.addDocumentError(payload));
-                message.error(payload.error.type + payload.error.error);
+                message.error('Failed to add new document please check your internet connection');
                 message.info('You can manually close the Add document Pop Up');
             }
       }
@@ -118,7 +118,7 @@ class DocumentsIndex extends Component {
                  method:'DELETE'
              }).then( response => {
                 if (!response.ok ) {
-                    message.error('Failed to fetch data from database please check your internet connection');
+                    message.error('Failed to delete document from database please check your internet connection');
                 }
                 else {
                     const oldDocuments = this.props.data;
