@@ -118,7 +118,7 @@ class DocumentsIndex extends Component {
                  method:'DELETE'
              }).then( response => {
                 if (!response.ok ) {
-                    message.error('Server Error: Failed to delete ecord from database');
+                    message.error('Failed to fetch data from database please check your internet connection');
                 }
                 else {
                     const oldDocuments = this.props.data;
