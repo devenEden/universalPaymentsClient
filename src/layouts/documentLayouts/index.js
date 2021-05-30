@@ -8,7 +8,8 @@ import { setDocuments,
          addNewDocument,
          addDocumentError,
          deleteDocuments,
-         updateStudentsFrontend } 
+         updateStudentsFrontend,
+         updateStudents } 
          from '../../actions/documents/documents';
 import DocumentsTable from '../../components/documentComponents/DocumentsTable';
 import AddDocument from '../../components/documentComponents/AddDocument';
@@ -151,7 +152,7 @@ class DocumentsIndex extends Component {
             })
             .then(response => {
                 if (!response.ok ) {
-                    message.error(`Error: ${response.error}`);
+                    message.error(`Failed to update data in database. Please check your connection`);
                 }
                 else {
                     response.json()
@@ -168,10 +169,15 @@ class DocumentsIndex extends Component {
                         setTimeout(msgLoading);
                         message.success('Document has been updated');
                     })
-                    .catch(err => console.log(err))
+                    .catch(err => {
+                        console.log(err);
+                    })
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err);
+                console.log('Action',this.props.updateStudents({open:false}));
+            })
         } catch (error) {
             console.log(error);
         }
@@ -227,6 +233,7 @@ const mapDispatchToProps = () => {
         addDocumentError,
         deleteDocuments,
         updateStudentsFrontend,
+        updateStudents
     }
 }
 

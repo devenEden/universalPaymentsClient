@@ -51,18 +51,13 @@ class StudentLayout extends Component {
         })
       .catch( err => {
           console.log(err);
-          const loadError = {
-              type:'Server Error',
-              error:'Failed to fetch data from database',
-              hasData:false,
-              loading:false,
+          const payload = {
+            hasData:false,
+            data:[],
+            loading:false
           }
-          this.props.setStudentsError(loadError);
-          try {
-              message.error(this.props.loadError.type + ': ' +this.props.loadError.error)
-          } catch (error) {
-              console.log(error);
-          }
+           console.log('Action',this.props.setStudents(payload));
+           message.error('Error: failed to load data from database, Please check your connection' );
       }); 
     } 
     //Mount Component
@@ -95,7 +90,7 @@ class StudentLayout extends Component {
             console.log(error);
             const addError = {
                 type:'Server Error',
-                error:'Failed to add record to data base '
+                error:'Failed to add record to data base; Please check your internet connection '
             }
             console.log('Action',this.props.addStudentError(addError));
             message.error(this.props.addError.type + ': ' +this.props.addError.error)
@@ -146,7 +141,7 @@ class StudentLayout extends Component {
              })
              .then( response => {
                    if (!response.ok) {
-                       message.error('Server Error: failed to updata data in database' + response.error);
+                       message.error('Failed to updata data in database. Please check your connection');
                    }
                    else{
                        response.json()
