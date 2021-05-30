@@ -5,7 +5,8 @@ import { Link }  from 'react-router-dom';
 import { 
          FiUser,
          FiHome,
-         FiFile
+         FiFile,
+         FiInfo
     } from 'react-icons/fi';
 const {  Sider } = Layout;
 
@@ -23,6 +24,9 @@ const SideMenu = () => {
             </Menu.Item>
             <Menu.Item key="3" icon={<FiFile />}>
             <Link to='/documents'>  Documents </Link>
+            </Menu.Item>
+            <Menu.Item key="4" icon={<FiInfo />}>
+            <Link to='/about'>  About </Link>
             </Menu.Item>
           </Menu>
         </Sider>

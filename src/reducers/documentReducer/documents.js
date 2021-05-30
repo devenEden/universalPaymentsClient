@@ -1,6 +1,9 @@
 import { documentConstants } from "../../actions/documents/documents";
 
 const initialState = {
+   
+    globalPath:'https://universalpaymentsbackend.herokuapp.com',
+
     isLoading:true,
     loadErrors:{},
     documents:[],
@@ -15,6 +18,9 @@ const initialState = {
     radioValue:'Student',
     universalPaymentsFormData:{},
     universalPaymentsComponent:'main',
+
+    updateDocumentsData:{},
+    isUpdateDocumentsModalOpen:false
 }
 
 const documentReducer = (state = initialState, { type, payload }) => {
@@ -56,16 +62,28 @@ const documentReducer = (state = initialState, { type, payload }) => {
              documents:payload.documents
        }
     case documentConstants.UNIVERSAL_PAYMENTS_FORM: 
-     return {
-         ...state,
-         radioValue:payload
-     }
+        return {
+            ...state,
+            radioValue:payload
+        }
      case documentConstants.UNIVERSAL_PAYMENTS_COMPONENT: 
-     return {
-         ...state,
-         universalPaymentsComponent:payload.component,
-         universalPaymentsFormData:payload.data
-     }
+        return {
+            ...state,
+            universalPaymentsComponent:payload.component,
+            universalPaymentsFormData:payload.data
+        }
+    case documentConstants.UPDATE_DOCUMENTS_REQUEST: 
+        return {
+            ...state,
+            isUpdateDocumentsModalOpen:payload.open,
+            updateDocumentsData:payload.data
+        }
+    case documentConstants.UPDATE_DOCUMENTS_FRONTEND: 
+        return {
+            ...state,
+            isUpdateDocumentsModalOpen:payload.open,
+            documents:payload.data,
+        }
      default:
         return state;
     }

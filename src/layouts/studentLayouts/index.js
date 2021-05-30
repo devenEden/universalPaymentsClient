@@ -7,27 +7,44 @@ import { setStudents,
          setStudentsError,
          addStudentError,
          deleteStudentError,
-         updateStudent,
+         updateStudentFrontEnd
        } from '../../actions/students/students';
 import React from 'react';
 import AddStudent from "../../components/studentComponents/AddStudent";
 import { message } from "antd";
 
+
 class StudentLayout extends Component {
     state = {
         modelOpen: false,
-        editData:{},
+        API_URL:this.props.API_URL,
     }
     //get All Students
     
      fetchStudents = async () => {
-       await fetch(`https://universalpaymentsbackend.herokuapp.com/api/students/`)
+       await fetch(`${this.state.API_URL}/api/students/`)
       .then( response =>  response.json() )
       .then(studentList => { 
           try {
-                if(studentList)
+                if(studentList && studentList.length > 0){
 
-                    console.log('Action',this.props.setStudents(studentList));
+                const payload = {
+                  hasData:true,
+                  data:studentList,
+                  loading:false
+                }
+                 console.log('Action',this.props.setStudents(payload));
+                }
+                else {
+                    const payload = {
+                        hasData:false,
+                        data:studentList,
+                        loading:false
+                      }
+                      console.log('Action',this.props.setStudents(payload));
+                      message.info('No students added yet. Click Add New student to add new student');
+                } 
+
               } catch (error) {
                     console.log(error);
               }
@@ -36,7 +53,9 @@ class StudentLayout extends Component {
           console.log(err);
           const loadError = {
               type:'Server Error',
-              error:'Failed to fetch data from database '
+              error:'Failed to fetch data from database',
+              hasData:false,
+              loading:false,
           }
           this.props.setStudentsError(loadError);
           try {
@@ -49,13 +68,12 @@ class StudentLayout extends Component {
     //Mount Component
     componentDidMount () {
         this.fetchStudents();
-        console.log(process.env.API_URL);
     }
     //add new Student
     addStudent = async student => {
-
+        const msgLoading = message.loading('Adding Record. Please wait for a confirmation message');
         try {
-            const res =  await  fetch('https://universalpaymentsbackend.herokuapp.com/api/students/create',{
+            const res =  await  fetch(`${this.state.API_URL}/api/students/create`,{
                     method:'POST',
                     headers: {
                         'Content-type':'application/json'
@@ -64,7 +82,6 @@ class StudentLayout extends Component {
                 });
             res.json()
             .then(response => {
-                const msgLoading = message.loading('Adding Record ...');
                 const studentsOld = this.props.students;
                 const newStudents = [...studentsOld,response.response];
                 //dispatch action
@@ -87,8 +104,8 @@ class StudentLayout extends Component {
     }
     //delete Student
     deleteStudents = async id => {
-        console.log(id);
-        await fetch(`https://universalpaymentsbackend.herokuapp.com/api/students/${id}`,{
+        const msgLoading = message.loading('Deleting record. Please wait for a confirmation message');
+        await fetch(`${this.state.API_URL}/api/students/${id}`,{
             method:'DELETE'
         })
         .then(response => {
@@ -106,6 +123,7 @@ class StudentLayout extends Component {
                     return student._id !== id;
                     });
                     console.log('Action',this.props.deleteStudent(newStudents));
+                    setTimeout(msgLoading);
                     message.success('Record deleted succesfully');
                 }
             
@@ -114,22 +132,51 @@ class StudentLayout extends Component {
         
     }
     //Update Student
-    updateStudent = id => {
-        const updateStudentData = this.props.students.filter(student => {
-            return id === student._id;
-        });
-        const payload = {
-            open:true,
-            data:updateStudentData[0]
-        }
-        console.log('Action',this.props.updateStudent(payload));
+    updateStudentBackend = async values => {
+
+        const msgLoading = message.loading('Updating student. Please wait for a confirmation message');
+         try {
+
+            await fetch(`${this.state.API_URL}/api/students/${values._id}`,{
+                 method:'PUT',
+                 headers:{
+                     'Content-Type':'application/json'
+                 },
+                 body:JSON.stringify(values)
+             })
+             .then( response => {
+                   if (!response.ok) {
+                       message.error('Server Error: failed to updata data in database' + response.error);
+                   }
+                   else{
+                       response.json()
+                       .then(response => {
+                          const oldStudents =  this.props.students.filter(student => {
+                              return values._id !== student._id;
+                          });
+                          const newStudents = [values,...oldStudents];
+                          const payload = {
+                               success:true,
+                               open:false,
+                               data:newStudents
+                          }
+                         console.log('Action',this.props.updateStudentFrontEnd(payload));
+                          setTimeout(msgLoading);
+                          message.success('Student record has been updated!');
+                       })
+                       .catch(err => console.log(err))
+                   }
+             }).catch(err => console.log(err))
+         } catch (error) {
+             console.log(error);
+         }
     }
     //render Component 
     render() {
         return ( 
             <div className='container box-shadow'>
                 <AddStudent addStudent={this.addStudent} />
-                <StudentTable onUpdate={this.updateStudent} 
+                <StudentTable onUpdate={this.updateStudentBackend} 
                               onDelete={this.deleteStudents} 
                               data={this.props.students} />
             </div>
@@ -142,7 +189,9 @@ const mapStateToProps = state => {
         loadError: state.students.loadError,
         addError: state.students.addError,
         deleteError: state.students.deleteError,
-        updateModel: state.students.updateStudentData
+        updateModel: state.students.updateStudentData,
+        updateStudentData: state.students.updateStudentData,
+        API_URL: state.students.globalPath
     }
 }
 
@@ -154,7 +203,7 @@ const mapDispatchToProps = () => {
         setStudentsError,
         addStudentError,
         deleteStudentError,
-        updateStudent,
+        updateStudentFrontEnd,
     }
 }
 

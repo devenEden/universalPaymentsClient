@@ -1,7 +1,7 @@
 import DocumentsIndex from '../../layouts/documentLayouts'
 import UniversalPayments from '../../layouts/documentLayouts/UniversalPayments'
 
-const routes = [
+const documentRoutes = [
     {
         path:'/documents/universalPayments',
         component: UniversalPayments
@@ -12,4 +12,4 @@ const routes = [
     }
 ]
 
-export default routes;
+export default documentRoutes;

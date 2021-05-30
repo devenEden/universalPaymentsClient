@@ -11,6 +11,11 @@ export const documentConstants = {
     
     UNIVERSAL_PAYMENTS_FORM:'UNIVERSAL_PAYMENTS_FORM',
     UNIVERSAL_PAYMENTS_COMPONENT:'UNIVERSAL_PAYMENTS_COMPONENT',
+
+    UPDATE_DOCUMENTS_REQUEST:'UPDATE_DOCUMENTS_REQUEST',
+    UPDATE_DOCUMENTS_FRONTEND:'UPDATE_DOCUMENTS_FRONTEND',
+    UPDATE_STUDENTS_ERROR:'UPDATE_STUDENTS_ERROR',
+
 }
 
 export const setDocuments =  documents =>  ({
@@ -58,3 +63,13 @@ export const setUniversalPaymentsComponent = payload => ({
     type:documentConstants.UNIVERSAL_PAYMENTS_COMPONENT,
     payload
   })
+
+export const updateStudents = payload => ({
+   type:documentConstants.UPDATE_DOCUMENTS_REQUEST,
+   payload
+})
+
+export const updateStudentsFrontend = payload => ({
+    type:documentConstants.UPDATE_DOCUMENTS_FRONTEND,
+    payload
+ })

@@ -7,20 +7,23 @@ import { setDocuments,
          openAddDocumentsModal,
          addNewDocument,
          addDocumentError,
-         deleteDocuments } 
+         deleteDocuments,
+         updateStudentsFrontend } 
          from '../../actions/documents/documents';
 import DocumentsTable from '../../components/documentComponents/DocumentsTable';
 import AddDocument from '../../components/documentComponents/AddDocument';
 import { FiPlus } from 'react-icons/fi';
+import UpdateDocument from '../../components/documentComponents/UpdateDocument';
 
 
 class DocumentsIndex extends Component {
       state = {
-        isAddModalOpen:false
+        isAddModalOpen:false,
+        api_url:this.props.api_path
       }
       fetchDocuments = async () => {
-         try { 
-              await fetch('https://universalpaymentsbackend.herokuapp.com/api/documents')
+         try {
+              await fetch(`${this.props.api_path}/api/documents`)
                 .then(response => { 
                     response.json()
                     .then(response => {
@@ -60,7 +63,7 @@ class DocumentsIndex extends Component {
       }
      //add new Documeny 
       addDocument = async result => {
-          console.log(result,'eger')
+        const msgLoading = message.loading('Adding Document. Please wait for a confirmation');
             try {
 
                 const res =  await fetch('https://universalpaymentsbackend.herokuapp.com/api/documents/create',{
@@ -79,7 +82,6 @@ class DocumentsIndex extends Component {
 
                     }
                     else{
-                       const msgLoading = message.loading('Adding Record ...');
                        const newDocuments = [...this.props.data,response.response];
 
                        const payload = {
@@ -108,8 +110,10 @@ class DocumentsIndex extends Component {
                 message.info('You can manually close the Add document Pop Up');
             }
       }
+      
 
       deleteDocument = async id => {
+        const msgLoading = message.loading('Deleting document Please wait for a confirmation ');
              await fetch(`https://universalpaymentsbackend.herokuapp.com/api/documents/${id}`,{
                  method:'DELETE'
              }).then( response => {
@@ -117,7 +121,6 @@ class DocumentsIndex extends Component {
                     message.error('Server Error: Failed to delete ecord from database');
                 }
                 else {
-                    const msgLoading = message.loading('Deleting record ... ');
                     const oldDocuments = this.props.data;
                     const newDocuments = oldDocuments.filter( document => {
                         return id !== document._id 
@@ -133,6 +136,45 @@ class DocumentsIndex extends Component {
              })
              .catch(error => console.log(error));
         
+      }
+
+      updateDocument = async  values => {
+        const msgLoading = message.loading('Updating record. Please wait for a confirmation');
+        try {
+            await fetch(`${this.state.api_url}/api/documents/${values._id}`,
+            {
+                method:'PUT',
+                headers: {
+                    'Content-type':'application/json'
+                },
+                body:JSON.stringify(values)
+            })
+            .then(response => {
+                if (!response.ok ) {
+                    message.error(`Error: ${response.error}`);
+                }
+                else {
+                    response.json()
+                    .then(res => {
+                        const oldDocuments = this.props.data.filter( document => {
+                            return values._id !== document._id
+                        });
+                        const newStudents = [values,...oldDocuments];
+                        const payload = {
+                            data:newStudents,
+                            open:false
+                        }
+                        console.log('Action',this.props.updateStudentsFrontend(payload));
+                        setTimeout(msgLoading);
+                        message.success('Document has been updated');
+                    })
+                    .catch(err => console.log(err))
+                }
+            })
+            .catch(err => console.log(err))
+        } catch (error) {
+            console.log(error);
+        }
       }
 
     render() {
@@ -160,6 +202,7 @@ class DocumentsIndex extends Component {
                                 tableData={this.props.data}
                                 deleteRecord={this.deleteDocument}
                                 hasData={this.props.hasData} />
+                <UpdateDocument updateDocument={this.updateDocument} />
             </div>
         )
     }
@@ -170,7 +213,8 @@ const mapStateToProps = state => {
         loading: state.documents.isLoading,
         data: state.documents.documents,
         hasData: state.documents.documentsHasData,
-        openDocumentModel:state.documents.isAddDocumentModalOpen
+        openDocumentModel:state.documents.isAddDocumentModalOpen,
+        api_path: state.documents.globalPath
     }
 }
 
@@ -181,7 +225,8 @@ const mapDispatchToProps = () => {
         openAddDocumentsModal,
         addNewDocument,
         addDocumentError,
-        deleteDocuments
+        deleteDocuments,
+        updateStudentsFrontend,
     }
 }
 

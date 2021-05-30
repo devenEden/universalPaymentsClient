@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Modal,Form,Input,Select,Button } from 'antd';
 import { connect } from 'react-redux';
-import { updateStudent } from '../../actions/students/students';
+import { updateStudentBackend, updateStudentForm } from '../../actions/students/students';
 
 
 const { Option } = Select;
@@ -19,27 +19,13 @@ const { Option } = Select;
                  {name:'sex',value:this.props.updateData.sex},
                  {name:'course',value:this.props.updateData.course},]
       }
-      componentDidMount() {
-        this.setState({
-          fields:[{name:'firstName',value:this.props.updateData.firstName},
-          {name:'otherNames',value:this.props.updateData.otherNames},
-          {name:'sex',value:this.props.updateData.sex},
-          {name:'course',value:this.props.updateData.course}]
-         })
-      }
        handleCancel = () => {
          const payload = {
            open:false,
-           data:this.props.updateData
+          data:{}
          }
-         this.setState({
-          fields:[{name:'firstName',value:this.props.updateData.firstName},
-          {name:'otherNames',value:this.props.updateData.otherNames},
-          {name:'sex',value:this.props.updateData.sex},
-          {name:'course',value:this.props.updateData.course}]
-         })
          try {
-          console.log(this.props.updateStudent(payload));
+          console.log(this.props.updateStudentForm(payload));
          } catch (error) {
            console.log(error);
          }
@@ -50,32 +36,35 @@ const { Option } = Select;
           return {error:'Please enter a value ',status:'error'}
         }
       }
-      onFinish = (values) => {
+      onFinish = values => {
+        const updateStudentData = {...values,
+                                   _id:this.props.updateData._id,
+                                   studentNumber:this.props.updateData.studentNumber
+                                  };
         console.log('Success:', values); 
-        const payload = {
-          open:false,
-          data:this.props.updateData
-        }
-        this.setState({
-         fields:[{name:'firstName',value:this.props.updateData.firstName},
-         {name:'otherNames',value:this.props.updateData.otherNames},
-         {name:'sex',value:this.props.updateData.sex},
-         {name:'course',value:this.props.updateData.course}]
-        })
-        try {
-         console.log(this.props.updateStudent(payload));
-        } catch (error) {
-          console.log(error);
-        }
+       const payload = {
+         success:true,
+         data:updateStudentData
+       }
+      try {
+        this.props.onUpdate(updateStudentData)
+        console.log('Action',this.props.updateStudentBackend(payload));
+      } catch (error) {
+        console.log(error);
+      }
       };
     render() {
+      const fields = [{name:'firstName',value:this.props.updateData.firstName},
+      {name:'otherNames',value:this.props.updateData.otherNames},
+      {name:'sex',value:this.props.updateData.sex},
+      {name:'course',value:this.props.updateData.course}]
         return (
             <div>
-                <Modal footer={null} title="Update Record" visible={this.props.openModal}  onCancel={() => {this.handleCancel()}}>
+                <Modal key={this.props.updateData._id} footer={null} title="Update Record" visible={this.props.openModal}  onCancel={() => {this.handleCancel()}}>
                  <Form
                    onFinish={this.onFinish}
                   layout='vertical'
-                        fields={this.state.fields} >
+                        fields={fields} >
                       <Form.Item name='firstName'
                                  label='First Name'
                                  rules={[{
@@ -92,17 +81,6 @@ const { Option } = Select;
                                  }]}>
                         <Input />
                       </Form.Item>
-                      <Form.Item name='course'
-                                 label='Course'
-                                 rules={[{
-                                   required:true,
-                                   message:'Please input a course'
-                                 }]}>
-                                 <Select>
-                                   <Option value='M'>Course 1</Option>
-                                   <Option value='F'>Course 2</Option>
-                                 </Select>
-                      </Form.Item>
                       <Form.Item name='sex'
                                  label='Gender'
                                  rules={[{
@@ -114,8 +92,19 @@ const { Option } = Select;
                           <Option value='F'>F</Option>
                         </Select>
                       </Form.Item>
+                      <Form.Item name='course'
+                                 label='Course'
+                                 rules={[{
+                                   required:true,
+                                   message:'Please input a course'
+                                 }]}>
+                                 <Select>
+                                   <Option value='Course 1'>Course 1</Option>
+                                   <Option value='Course 2'>Course 2</Option>
+                                 </Select>
+                      </Form.Item>
                      <Form.Item>
-                       <Button type='primary' htmlType='submit'>Save</Button>
+                       <Button type='primary' htmlType='submit'>Update</Button>
                      </Form.Item>
                  </Form>
                 </Modal>
@@ -133,7 +122,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = () => {
    return {
-     updateStudent
+     updateStudentForm,
+     updateStudentBackend
    }
 }
 

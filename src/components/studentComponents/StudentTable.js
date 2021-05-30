@@ -1,6 +1,8 @@
 import { Component } from "react";
-import { Table, Space } from 'antd';
+import { Table, Space, Popconfirm } from 'antd';
 import UpdateStudent from "./UpdateStudent";
+import { connect } from "react-redux";
+import { updateStudentForm } from '../../actions/students/students';
 
 const { Column } = Table;
 
@@ -8,55 +10,51 @@ const { Column } = Table;
 
 class StudentTable extends Component {
    state = {
-     title:undefined,
-     loading: true,
-     hasData:false,
-     bordered:true,
-     size:'small'
+     deleteId:''
    }
- 
-  componentDidMount () {
-    console.log(this.props.data)
-    const { data } = this.props;
-    try {
-      if (undefined !== data) {
-           if (data.length > 0) {
-             this.setState({
-               loading:false,
-               hasData:true
-             })
-           } else {
-            this.setState({
-              loading:false,
-              hasData:false
-            }) 
-           }
-        }else{
-         console.log('now theres no undefined',data.length);
-        }
-    } catch (error) {
-      console.log(error);
-      console.log('now theres no undefined');
-      this.setState({
-        loading:false,
-        hasData:false
-      })
-    }
-  }
-  onDelete = (e) => {
-    // eslint-disable-next-line no-restricted-globals
-const con  = confirm('Are you sure you want to delete this record'); 
-   if (con) {
-    this.props.onDelete(e.target.id);
-   }
-  }
+
+  //updating the global state to gain the clicked div
   onUpdate = (e) => {
-   this.props.onUpdate(e.target.id);
+      try {
+        const { id  } = e.target;
+        const updateStudentData = this.props.students.filter(student => {
+          return id === student._id;
+      });
+      const payload = {
+          open:true,
+          data:updateStudentData[0]
+      }
+      console.log('Action',this.props.updateStudentForm(payload));
+      } catch (error) {
+        console.log(error);
+      }
   }
+   deleteButton = e => {
+      this.setState({
+        deleteId:e.target.id
+      });
+   }
+   //title for students
+    title = () => {
+      return (
+        <h3 className='bold margin-zero'>Students</h3>
+      )
+    }
+
+     confirm = (e) => {
+     this.props.onDelete(this.state.deleteId);
+    }
+
+    cancel = (e) => {
+      console.log(e);
+    }
     render() { 
         return (
-            <Table {...this.state} 
-                   title={()=>'Students'}
+            <Table loading= {this.props.loading}
+                   hasData={this.props.hasData}
+                   bordered={true}
+                   size='medium'
+                   title={this.title}
                    dataSource={this.props.data}>
                 <Column title="Std Number" dataIndex="studentNumber" key="studentNumber" />
                 <Column title="First Name" dataIndex="firstName" key="firstName" />
@@ -69,17 +67,25 @@ const con  = confirm('Are you sure you want to delete this record');
                 dataIndex='_id'
                 render={(text, record) => (
                     <Space size="middle"> 
-                    {/* <button id={record._id } 
+                    <button id={record._id } 
                             onClick={this.onUpdate}
                             className='ant-btn ant-btn-primary ant-btn-sm'>
                             edit
-                    </button> */}
-                    <UpdateStudent />
+                    </button>
+                    <UpdateStudent onUpdate={this.props.onUpdate} />
+                    <Popconfirm title='Are you sure you want to delete this'
+                                onConfirm={this.confirm}
+                                onCancel={this.cancel}
+                                okText="Yes"
+                                id={record._id}
+                                cancelText="No"
+                    >
                     <button id={record._id } 
-                            onClick={this.onDelete}
+                             onClick={this.deleteButton}
                             className='ant-btn ant-btn-primary ant-btn-sm ant-btn-dangerous'>
                             delete
                     </button>
+                    </Popconfirm>
                     </Space>
                 )}
                 />
@@ -88,5 +94,18 @@ const con  = confirm('Are you sure you want to delete this record');
     }
 }
 
+const mapStateToProps = state => {
+  return {
+    students: state.students.students,
+    loading: state.students.loadingStudents,
+    hasData: state.students.hasData
+  }
+}
 
-export default StudentTable;
+const mapDispatchToProps = () => {
+  return {
+    updateStudentForm,
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps())(StudentTable);

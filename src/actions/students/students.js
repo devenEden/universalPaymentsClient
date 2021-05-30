@@ -12,11 +12,13 @@ export const studentConstants  = {
    ADD_STUDENT_ERROR: 'ADD_STUDENT_ERROR',
 
    UPDATE_STUDENT_DATA:'UPDATE_STUDENT_DATA',
+   UPDATE_STUDENT_BACKEND:'UPDATE_STUDENT_BACKEND',
+   UPDATE_STUDENT_FRONTEND:'UPDATE_STUDENT_FRONTEND',
 }
 
-export const setStudents = students => ({
+export const setStudents = payload => ({
    type:studentConstants.GET_STUDENT_REQUEST,
-   payload:students
+   payload
 })
 
 export const addStudents = students => ({
@@ -45,7 +47,18 @@ export const addStudentError = error => ({
 
 })
 
-export const updateStudent = payload => ({
+export const updateStudentForm = payload => ({
    type:studentConstants.UPDATE_STUDENT_DATA,
+   payload
+})
+
+
+export const updateStudentBackend = payload => ({
+   type:studentConstants.UPDATE_STUDENT_BACKEND,
+   payload
+})
+
+export const updateStudentFrontEnd = payload => ({
+   type:studentConstants.UPDATE_STUDENT_FRONTEND,
    payload
 })
