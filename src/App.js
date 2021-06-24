@@ -23,16 +23,16 @@ class App extends React.Component {
               {Routes.map((route, idx) => (
                 <Route
                   exact
-                  key={idx}
+                  key={route.key}
                   path={route.path}
                   component={route.component}
                 />
               ))}
             </div>
-            <Route>
+          </Layout>
+          <Route>
               <PageNotFound />
             </Route>
-          </Layout>
         </Switch>
       </Router>
     );

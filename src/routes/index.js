@@ -6,18 +6,22 @@ import documentRoutes from './documentRoutes';
 
 const indexRoutes = [
     { 
+        key:'/',
         path: '/',
         component: HomePage
     },
     { 
+        key:'/students',
         path: '/students',
         component: Students
     },
     {
+        key:'/documents',
         path: '/documents',
         component: documentsPage
     },
     {
+        key:'/about',
         path:'/about',
         component:About
     }
