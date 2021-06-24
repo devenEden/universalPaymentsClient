@@ -1,10 +1,11 @@
-import React from 'react';
-import 'antd/dist/antd.css';
-import SideMenu from './components/SideMenu';
-import Header from './components/Header';
-import { BrowserRouter as Router , Route, Switch  } from 'react-router-dom';
-import { Layout } from 'antd';
-import Routes from './routes';
+import React from "react";
+import "antd/dist/antd.css";
+import SideMenu from "./components/SideMenu";
+import Header from "./components/Header";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Layout } from "antd";
+import Routes from "./routes";
+import PageNotFound from "./pages/PageNotFound";
 
 class App extends React.Component {
   state = {
@@ -15,16 +16,24 @@ class App extends React.Component {
     return (
       <Router>
         <Switch>
-       <Layout>
-        <SideMenu  />
-        <div className='mainContainer'>
-        <Header  />
-        {
-    Routes.map( (route, idx) => <Route exact key={idx}  path={route.path} component={route.component} />)
-        }
-        </div>
-       </Layout>
-       </Switch>
+          <Layout>
+            <SideMenu />
+            <div className="mainContainer">
+              <Header />
+              {Routes.map((route, idx) => (
+                <Route
+                  exact
+                  key={idx}
+                  path={route.path}
+                  component={route.component}
+                />
+              ))}
+            </div>
+            <Route>
+              <PageNotFound />
+            </Route>
+          </Layout>
+        </Switch>
       </Router>
     );
   }
